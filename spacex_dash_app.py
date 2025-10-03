@@ -96,13 +96,22 @@ def get_payload_plot(entered_site, payload_mass):
     payload_mass_ = payload_mass[0] if payload_mass else None
 
     if entered_site == "ALL":
-        data = spacex_df[spacex_df["Payload Mass (kg)"] == payload_mass] if payload_mass_ else spacex_df
+        if payload_mass:
+            data = spacex_df[spacex_df["Payload Mass (kg)"] >= payload_mass[0]]
+            data = data[data["Payload Mass (kg)"] <= payload_mass[1]]
+
+        else:
+            data = spacex_df
+
         fig = px.scatter(data, x="Payload Mass (kg)", y="class", title="Scatter")
         return fig
 
     else:
         data = spacex_df[spacex_df["Launch Site"] == entered_site]
-        data = data[data["Payload Mass (kg)"] == payload_mass] if payload_mass_ else data
+        if payload_mass:
+            data = data[data["Payload Mass (kg)"] >= payload_mass[0]]
+            data = data[data["Payload Mass (kg)"] <= payload_mass[1]]
+
         fig = px.scatter(data, x="Payload Mass (kg)", y="class", title="Scatter")
         return fig
 
